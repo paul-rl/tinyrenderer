@@ -7,6 +7,18 @@ constexpr TGAColor red     = {  0,   0, 255, 255};
 constexpr TGAColor blue    = {255, 128,  64, 255};
 constexpr TGAColor yellow  = {  0, 200, 255, 255};
 
+// first crack at making  a line between points. Using parametric
+void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color) {
+    float interval = 0.02f; // This will lead us to problems... is there a smarter way?
+
+    for (float t = 0; t < 1; t += interval) {
+        int x = std::round(ax + t * (bx - ax));
+        int y = std::round(ay + t * (by - ay));
+        framebuffer.set(x, y, color);
+    }
+
+}
+
 int main(int argc, char** argv) {
     constexpr int width  = 64;
     constexpr int height = 64;
@@ -16,6 +28,11 @@ int main(int argc, char** argv) {
     int bx = 12, by = 37;
     int cx = 62, cy = 53;
 
+    line(ax, ay, bx, by, framebuffer, blue);
+    line(cx, cy, bx, by, framebuffer, green);
+    line(cx, cy, ax, ay, framebuffer, yellow);
+    line(ax, ay, cx, cy, framebuffer, red);
+
     framebuffer.set(ax, ay, white);
     framebuffer.set(bx, by, white);
     framebuffer.set(cx, cy, white);
@@ -23,4 +40,3 @@ int main(int argc, char** argv) {
     framebuffer.write_tga_file("framebuffer.tga");
     return 0;
 }
-
